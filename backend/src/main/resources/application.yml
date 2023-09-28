@@ -1,0 +1,16 @@
+security.jwt.token.secret-key: my-secret-key
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/backenddb
+    username: postgres
+    password: root
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+
+logging:
+  level:
+    root: info
