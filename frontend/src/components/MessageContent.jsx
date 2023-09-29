@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { config } from '../constants'
 import { setAuthHeader } from '../utility';
 
-export default function AuthContent() {
+export default function MessageContent() {
 
-    useEffect(componentDidMount);
+    useEffect(componentDidMount, []);
     const [data, setData] = useState([])
 
     function componentDidMount() {
@@ -33,8 +33,7 @@ export default function AuthContent() {
             <div className="col-4">
                 <div className="card" style={{ width: "18rem" }}>
                     <div className="card-body">
-                        <h5 className="card-title">Backend response</h5>
-                        <p className="card-text">Content:</p>
+                        <h5 className="card-title">You're logged in</h5>
                         <ul>
                             {data && data.map((line) =>
                                 <li key={line}>{line}</li>

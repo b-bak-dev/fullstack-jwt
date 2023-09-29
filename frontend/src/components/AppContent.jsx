@@ -1,62 +1,32 @@
-import React from 'react';
+import { useState } from 'react';
 import Buttons from './Buttons';
-import AuthContent from './AuthContent';
-import LoginForm from './LoginForm';
+import AuthContent from './MessageContent';
+import SignInForm from './SignInForm';
+import SignUpForm from './SignUpForm';
 import WelcomeContent from './WelcomeContent'
+
 import { setAuthHeader } from '../utility';
+import { config } from '../constants';
 
-export default class AppContent extends React.Component {
+export default function AppContent() {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            componentToShow: "welcome"
-        }
+    const [componentToShow, setComponentToShow] = useState('welcome')
+
+    function login() {
+        setComponentToShow('login')
     };
 
-    login = () => {
-        this.setState({ componentToShow: "login" })
+    function register() {
+        setComponentToShow('register')
     };
 
-    logout = () => {
-        this.setState({ componentToShow: "welcome" })
+    function logout() {
+        setComponentToShow('welcome')
         setAuthHeader(null);
     };
 
-    onLogin = (e, username, password) => {
-        e.preventDefault();
-
-        const url = 'http://localhost:8080'
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                login: username,
-                password: password
-            })
-        }
-
-        fetch(`${url}/login`, options)
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.token !== null && data.token !== "null") {
-                    setAuthHeader(data.token);
-                    this.setState({ componentToShow: "messages" });
-                }
-            })
-            .catch((error) => {
-                this.setState({ componentToShow: "welcome" })
-            });
-    };
-
-
-
-    onRegister = (event, firstName, lastName, username, password) => {
+    function onSignUp(event, firstName, lastName, username, password) {
         event.preventDefault();
-
-        const url = 'http://localhost:8080'
         const options = {
             method: "POST",
             headers: {
@@ -70,36 +40,32 @@ export default class AppContent extends React.Component {
             })
         }
 
-        fetch(`${url}/register`, options)
+        fetch(`${config.url.BASE_URL}/register`, options)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data.token);
                 if (data.token !== null && data.token !== "null") {
                     setAuthHeader(data.token);
-                    this.setState({ componentToShow: "messages" });
+                    setComponentToShow('messages')
                 }
             })
             .catch((error) => {
-                this.setState({ componentToShow: "welcome" })
+                setComponentToShow('welcome')
             });
     };
 
-    render() {
-        return (
-            <>
-                <Buttons
-                    login={this.login}
-                    logout={this.logout}
-                />
+    return (
+        <>
+            <Buttons
+                login={login}
+                register={register}
+                logout={logout}
+            />
 
-                {this.state.componentToShow === "welcome" && <WelcomeContent />}
-                {this.state.componentToShow === "login"
-                    && <LoginForm
-                        onLogin={this.onLogin}
-                        onRegister={this.onRegister}
-                    />}
-                {this.state.componentToShow === "messages" && <AuthContent />}
-            </>
-        );
-    };
+            {componentToShow === "welcome" && <WelcomeContent />}
+            {componentToShow === "login" && <SignInForm componentToShow={setComponentToShow} />}
+            {componentToShow === "register" && <SignUpForm componentToShow={setComponentToShow} />}
+            {componentToShow === "messages" && <AuthContent />}
+        </>
+    );
 }
