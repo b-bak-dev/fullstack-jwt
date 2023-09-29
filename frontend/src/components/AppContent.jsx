@@ -4,9 +4,9 @@ import AuthContent from './MessageContent';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
 import WelcomeContent from './WelcomeContent'
+import LogoutContent from './LogoutContent'
 
 import { setAuthHeader } from '../utility';
-import { config } from '../constants';
 
 export default function AppContent() {
 
@@ -21,37 +21,8 @@ export default function AppContent() {
     };
 
     function logout() {
-        setComponentToShow('welcome')
+        setComponentToShow('logout')
         setAuthHeader(null);
-    };
-
-    function onSignUp(event, firstName, lastName, username, password) {
-        event.preventDefault();
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
-                login: username,
-                password: password
-            })
-        }
-
-        fetch(`${config.url.BASE_URL}/register`, options)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data.token);
-                if (data.token !== null && data.token !== "null") {
-                    setAuthHeader(data.token);
-                    setComponentToShow('messages')
-                }
-            })
-            .catch((error) => {
-                setComponentToShow('welcome')
-            });
     };
 
     return (
@@ -66,6 +37,7 @@ export default function AppContent() {
             {componentToShow === "login" && <SignInForm componentToShow={setComponentToShow} />}
             {componentToShow === "register" && <SignUpForm componentToShow={setComponentToShow} />}
             {componentToShow === "messages" && <AuthContent />}
+            {componentToShow === "logout" && <LogoutContent />}
         </>
     );
 }
