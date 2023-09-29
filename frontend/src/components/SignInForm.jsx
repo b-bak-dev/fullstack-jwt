@@ -10,7 +10,6 @@ export default function SignInForm(props) {
   const [loading, setLoading] = useState(false)
 
   function onSubmitSignIn(e) {
-    setLoading(true)
     e.preventDefault();
 
     const options = {
@@ -26,7 +25,9 @@ export default function SignInForm(props) {
 
     fetch(`${config.url.BASE_URL}/login`, options)
       .then((response) => {
-
+        if (!response.ok) {
+          throw Error("Server error")
+        }
         return response.json()
       })
       .then((data) => {
@@ -37,7 +38,7 @@ export default function SignInForm(props) {
       })
       .catch((err) => {
         console.log(err.message)
-        setLoading(false)
+        setLoading(true)
         setError(err.message)
       });
   };
